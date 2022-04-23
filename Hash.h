@@ -10,7 +10,7 @@ struct Idx {
     unsigned int off;				  //索引在索引文件中偏移量
     unsigned int off_next;         //索引链表中当前索引的下一跳索引的偏移量
     int len_key;						  //索引字符串的长度
-    int len_value;                      //数据字符串的长度
+    int len_value[10];                      //数据字符串的长度
     bool isDelete;
 };
 
@@ -20,11 +20,11 @@ public:
     unsigned int hash(const char* key);      //散列函数
     int open();												//打开数据库的两个文件，并载入last_idx_off和last_value_off两个值
     int close();                                             //保存关闭数据库的两个文件，并存入last_idx_off和last_value_off的值到文件
-    char* find(const char* key);                   //寻找key对应的value，返回value字符串指针,否则返回NULL
+    vector<string> find(const char* key);                   //寻找key对应的value，返回value字符串指针,否则返回NULL
     bool del(char* key);								//删除key，返回true，否则返回false
-    int insert(char* key, char* value);           //插入key及value，返回1，若已存在该key，返回0
-    bool replace(char* key, char* value);      //替换key对应的value，找不到key返回false，替换成功返回true
-    void traversal();                                      //打印数据库所有key及对应value
+    int insert(char* key, vector<string> val);           //插入key及value，返回1，若已存在该key，返回0
+    //bool replace(char* key, char* value);      //替换key对应的value，找不到key返回false，替换成功返回true
+   // void traversal();                                      //打印数据库所有key及对应value
     void clear();										 //删除数据库的两个文件
 private:
     Idx* find_key(const char*key);                //寻找key对应索引结构体,返回结构体的指针，否则返回NULL

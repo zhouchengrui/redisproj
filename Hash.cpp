@@ -1,21 +1,66 @@
 #include "Hash.h"
 #include <cstdio>
+#include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <string>
 #include <cstring>
+#include <vector>
+
 using namespace std;
 
 DB::DB(string s) {
 	fileName = s;
 	idxName = fileName + ".idx";
 	datName = fileName + ".dat";
-	err1 = fopen_s(&fp1, idxName.c_str(), "rb");
-	err2 = fopen_s(&fp2, datName.c_str(), "rb");
-	if ((err1 != 0) || (err2 != 0)) {
+    cout << "idxName : " << idxName << endl;
+    string idxPath =  "./" + fileName + ".idx";
+    string datPath = "./" + fileName + ".dat";
+    /*
+    fstream idx_file;
+    fstream dat_file;
+    idx_file.open(idxName, ios::in);
+    dat_file.open(idxName, ios::in);
+    if (!idx_file.is_open() || !dat_file.is_open()) {
+        cout << "An empty database is built!" << endl;
+        fstream new_idx_file;
+        fstream new_dat_file;
+        new_idx_file.open(idxName, ios::out);
+        new_dat_file.open(idxName, ios::out);
+
+        last_dat_off = 0;
+        last_idx_off = HASH_SIZE;
+        new_dat_file << last_dat_off;
+        new_idx_file << last_idx_off;
+
+        Idx index;
+        for (int i = 0; i < KEYSIZE_MAX - 1; i++)
+            index.key[i] = '\0';
+        index.key[KEYSIZE_MAX - 1] = '\0';
+        index.value_off = 0;
+        index.off = 0;
+        index.off_next = 0;
+        index.len_key = 0;
+        index.len_value = 0;
+        index.isDelete = true;
+        for (int i = 0; i < HASH_SIZE; i++)
+            new_idx_file << &index;
+        new_idx_file.close();
+        new_dat_file.close();
+    }
+    else {
+        cout << "Database : " << s << " has been found!" << endl;
+        idx_file.close();
+        dat_file.close();
+    }
+     */
+	fp1 = fopen(idxPath.c_str(), "rb");
+	fp2 = fopen(datPath.c_str(), "rb");
+	if ((fp1 == NULL) || (fp2 == NULL)) {
 		cout << "An empty DB will be built!\n";
-		fopen_s(&fp1, idxName.c_str(), "wb");
-		fopen_s(&fp2, datName.c_str(), "wb");
+		fp1 = fopen(idxPath.c_str(), "wb");
+		fp2 = fopen(datPath.c_str(), "wb");
 		//
 		last_dat_off = 0;
 		last_idx_off = HASH_SIZE;
@@ -30,7 +75,8 @@ DB::DB(string s) {
 		index.off = 0;
 		index.off_next = 0;
 		index.len_key = 0;
-		index.len_value = 0;
+        for (int i = 0; i < 10; i++)
+		    index.len_value[i] = 0;
 		index.isDelete = true;
 		for (int i = 0; i < HASH_SIZE; i++)
 			fwrite(&index, sizeof(index), 1, fp1);
@@ -47,12 +93,14 @@ DB::DB(string s) {
 
 int DB::open() {
 	cout << "Db has been open.\n";
-	if ((err1 = fopen_s(&fp1, idxName.c_str(), "rb+")) != 0) {
-		cout << "Cannot build index file.\n";
+    string idxPath = "./" + idxName;
+    string datPath = "./" + datName;
+	if ((fp1 = fopen(idxPath.c_str(), "rb+")) == NULL) {
+		cout << "Cannot open index file.\n";
 		return 0;
 	}
-	if ((err2 = fopen_s(&fp2, datName.c_str(), "rb+")) != 0) {
-		cout << "Cannot build data file .\n";
+	if ((fp2 = fopen(datPath.c_str(), "rb+")) == NULL) {
+		cout << "Cannot open data file .\n";
 		return 0;
 	}
 	int num;
@@ -91,17 +139,36 @@ unsigned int DB::hash(const char* key) {
 	return ((h & 0x7FFFFFFF) % HASH_SIZE);
 }
 
-char*  DB::find(const char* key) {
+vector<string>  DB::find(const char* key) {
 	Idx* Idx_find = find_key(key);
+    vector<string> val;
 	if (Idx_find == NULL) {
-		return NULL;
+		return val;
 	}
 	else {
 		unsigned int n = Idx_find->value_off;
+        int pos = 0;
+        string v = "";
+        for (int i = 0; i < 10; i++) {
+            if (Idx_find->len_value[i] == 0)
+                break;
+            cout << "data lens : " <<  Idx_find->len_value[i] << endl;
+            char*value = new char[Idx_find->len_value[i] + 1];
+            fseek(fp2, sizeof(int) + Idx_find->value_off, pos);
+            fread(value, sizeof(char), Idx_find->len_value[i] + 1, fp2);
+            pos += Idx_find->len_value[i] + 1;
+            v = v.insert(0, value);
+            val.push_back(v);
+            cout << "data is : " <<  value << endl;
+            v = "";
+        }
+        /*
 		char*value = new char[Idx_find->len_value + 1];
 		fseek(fp2, sizeof(int) + Idx_find->value_off, 0);
 		fread(value, sizeof(char), Idx_find->len_value + 1, fp2);
 		return value;
+         */
+        return val;
 	}
 }
 
@@ -121,7 +188,7 @@ bool DB::del(char* key) {
 	}
 }
 
-int DB::insert(char* key, char*value) {
+int DB::insert(char* key, vector<string> val) {
 	if (find_key(key)) {
 		return 0;
 	}
@@ -132,36 +199,60 @@ int DB::insert(char* key, char*value) {
 	if (Idx_new.off == 0) {
 		//initialize the new Index struct
 		Idx_new.len_key = strlen(key);
-		Idx_new.len_value = strlen(value);
+        int total_len = 0;
+        for (int i = 0; i < val.size(); i++) {
+            cout << "debug " << val[i] << endl;
+            Idx_new.len_value[i] = val[i].length() + 1;
+            total_len += val[i].length() + 1;
+        }
+		//Idx_new.len_value = strlen(value);
+        last_idx_off += 1;
 		Idx_new.off = off_new;
 		Idx_new.isDelete = false;
 		Idx_new.off_next = last_idx_off;
 		Idx_new.value_off = last_dat_off;
-		last_dat_off += (Idx_new.len_value + 1) * sizeof(char);
+        cout << "data :  " << Idx_new.value_off << endl;
+		last_dat_off += (total_len + 1) * sizeof(char);
 		for (int i = 0; i < Idx_new.len_key; i++) {
 			Idx_new.key[i] = key[i];
 		}
 		fseek(fp1, sizeof(Idx)*Idx_new.off + sizeof(int), 0);
 		fwrite(&Idx_new, sizeof(Idx), 1, fp1);
-		fseek(fp2, sizeof(int) + Idx_new.value_off, 0);
-		fwrite(value, sizeof(char), Idx_new.len_value + 1, fp2);
+		int pos = 0;
+        for (int i = 0; i < val.size(); i++) {
+            fseek(fp2, sizeof(int) + Idx_new.value_off, pos);
+            fwrite(val[i].c_str(), sizeof(char), Idx_new.len_value[i] + 1, fp2);
+            pos += Idx_new.len_value[i] + 1;
+        }
+		//fwrite(value, sizeof(char), Idx_new.len_value + 1, fp2);
 		fflush(fp1);
 		fflush(fp2);
 		return 1;
 	}
 	if (Idx_new.isDelete) {
 		Idx_new.len_key = strlen(key);
-		Idx_new.len_value = strlen(value);
+        int total_len = 0;
+        for (int i = 0; i < val.size(); i++) {
+            Idx_new.len_value[i] = val[i].length() + 1;
+            total_len += val[i].length() + 1;
+        }
+		//Idx_new.len_value = strlen(value);
 		Idx_new.isDelete = false;
 		Idx_new.value_off = last_dat_off;
-		last_dat_off += (Idx_new.len_value + 1) * sizeof(char);
+		last_dat_off += (total_len + 1) * sizeof(char);
 		for (int i = 0; i < Idx_new.len_key; i++) {
 			Idx_new.key[i] = key[i];
 		}
 		fseek(fp1, sizeof(Idx)*Idx_new.off + sizeof(int), 0);
 		fwrite(&Idx_new, sizeof(Idx), 1, fp1);
-		fseek(fp2, sizeof(int) + Idx_new.value_off, 0);
-		fwrite(value, sizeof(char), Idx_new.len_value + 1, fp2);
+        int pos = 0;
+        for (int i = 0; i < val.size(); i++) {
+            fseek(fp2, sizeof(int) + Idx_new.value_off, pos);
+            fwrite(val[i].c_str(), sizeof(char), Idx_new.len_value[i] + 1, fp2);
+            pos += Idx_new.len_value[i] + 1;
+        }
+		//fseek(fp2, sizeof(int) + Idx_new.value_off, 0);
+		//fwrite(value, sizeof(char), Idx_new.len_value + 1, fp2);
 		fflush(fp1);
 		fflush(fp2);
 		return 1;
@@ -172,37 +263,59 @@ int DB::insert(char* key, char*value) {
 			int flag = fread(&Idx_new, sizeof(Idx), 1, fp1);
 			if (flag == 0) { //no index in this place
 				Idx_new.len_key = strlen(key);
-				Idx_new.len_value = strlen(value);
+                int total_len = 0;
+                for (int i = 0; i < val.size(); i++) {
+                    Idx_new.len_value[i] = val[i].length() + 1;
+                    total_len += val[i].length() + 1;
+                }
+				//Idx_new.len_value = strlen(value);
 				Idx_new.off = last_idx_off;
 				last_idx_off += 1;
 				Idx_new.isDelete = false;
 				Idx_new.off_next = last_idx_off;
 				Idx_new.value_off = last_dat_off;
-				last_dat_off += (Idx_new.len_value + 1) * sizeof(char);
+				last_dat_off += (total_len + 1) * sizeof(char);
 				for (int i = 0; i < Idx_new.len_key; i++) {
 					Idx_new.key[i] = key[i];
 				}
 				fseek(fp1, sizeof(Idx)*Idx_new.off + sizeof(int), 0);
 				fwrite(&Idx_new, sizeof(Idx), 1, fp1);
-				fseek(fp2, sizeof(int) + Idx_new.value_off, 0);
-				fwrite(value, sizeof(char), Idx_new.len_value + 1, fp2);
+                int pos = 0;
+                for (int i = 0; i < val.size(); i++) {
+                    fseek(fp2, sizeof(int) + Idx_new.value_off, pos);
+                    fwrite(val[i].c_str(), sizeof(char), Idx_new.len_value[i] + 1, fp2);
+                    pos += Idx_new.len_value[i] + 1;
+                }
+				//fseek(fp2, sizeof(int) + Idx_new.value_off, 0);
+				//fwrite(value, sizeof(char), Idx_new.len_value + 1, fp2);
 				fflush(fp1);
 				fflush(fp2);
 				return 1;
 			}
 			if (Idx_new.isDelete) {
 				Idx_new.len_key = strlen(key);
-				Idx_new.len_value = strlen(value);
+                int total_len = 0;
+                for (int i = 0; i < val.size(); i++) {
+                    Idx_new.len_value[i] = val[i].length() + 1;
+                    total_len += val[i].length() + 1;
+                }
+				//Idx_new.len_value = strlen(value);
 				Idx_new.isDelete = false;
 				Idx_new.value_off = last_dat_off;
-				last_dat_off += (Idx_new.len_value + 1) * sizeof(char);
+				last_dat_off += (total_len + 1) * sizeof(char);
 				for (int i = 0; i < Idx_new.len_key; i++) {
 					Idx_new.key[i] = key[i];
 				}
 				fseek(fp1, sizeof(Idx)*Idx_new.off + sizeof(int), 0);
 				fwrite(&Idx_new, sizeof(Idx), 1, fp1);
-				fseek(fp2, sizeof(int) + Idx_new.value_off, 0);
-				fwrite(value, sizeof(char), Idx_new.len_value + 1, fp2);
+                int pos = 0;
+                for (int i = 0; i < val.size(); i++) {
+                    fseek(fp2, sizeof(int) + Idx_new.value_off, pos);
+                    fwrite(val[i].c_str(), sizeof(char), Idx_new.len_value[i] + 1, fp2);
+                    pos += Idx_new.len_value[i] + 1;
+                }
+				//fseek(fp2, sizeof(int) + Idx_new.value_off, 0);
+				//fwrite(value, sizeof(char), Idx_new.len_value + 1, fp2);
 				fflush(fp1);
 				fflush(fp2);
 				return 1;
@@ -214,7 +327,7 @@ int DB::insert(char* key, char*value) {
 
 
 
-
+/*
 bool DB::replace(char*key, char*value) {
 	//cout << "replace function\n";
 	Idx* Idx_find = find_key(key);
@@ -235,6 +348,7 @@ bool DB::replace(char*key, char*value) {
 		return true;
 	}
 }
+ */
 
 Idx* DB::find_key(const char* key) {
 	int len = strlen(key);
@@ -271,6 +385,7 @@ Idx* DB::find_key(const char* key) {
 	return NULL;
 }
 
+/*
 void DB::traversal() {
 	fseek(fp1, sizeof(int), 0);
 	Idx idx;
@@ -286,8 +401,11 @@ void DB::traversal() {
 		delete value;
 	}
 }
+ */
 
 void DB::clear() {
-	remove(idxName.c_str());
-	remove(datName.c_str());
+    string idxPath = "./" + idxName;
+    string datPath = "./" + datName;
+	remove(idxPath.c_str());
+	remove(datPath.c_str());
 }

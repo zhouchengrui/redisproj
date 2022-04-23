@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdlib>
-#include<ctime>
-#include<map>					 //测试时存储随机字符串
+#include <ctime>
+#include <map>					 //测试时存储随机字符串
 #include "Hash.h"
 #include "Hash.cpp"
 #define TEST_NUM 1000000
@@ -22,8 +22,10 @@ int main() {
         if (num == 1)
 //            test_correct();
             cout << "menu\n";
+        /*
         if(num==2)
             test_performance();
+        */
         if (num == 0)
             run();
         cout << "menu\n";
@@ -44,6 +46,7 @@ char* randomString(int max) {
     return s;
 }
 
+/*
 void test_performance() {
     string name = "test_performance";
     DB db(name);
@@ -114,7 +117,7 @@ void test_performance() {
     cout << "time for " << TEST_NUM << " deletion is: " << (double)(finish - start) / CLOCKS_PER_SEC << " seconds" << endl;
     db.clear();
 }
-
+*/
 
 
 //void test_correct() {
@@ -166,6 +169,7 @@ void run() {
     int n;
     cin >> n;
     while (n != -1) {
+        /*
         if (n == 0) {
             srand(time(NULL));
             map<char*, char*> m;
@@ -179,15 +183,29 @@ void run() {
                 db.insert(it->first, it->second);
             }
         }
+         */
         if (n == 1) {
             char key[KEYSIZE_MAX];
-            char value[VALUESIZE_MAX];
+            vector<string> val;
             cout << "insert operation\n";
             cout << "insert key:\n";
             cin >> key;
-            cout << "insert value:\n";
-            cin >> value;
-            if (db.insert(key, value))
+            cout << "insert value (enter # at the end of value):\n";
+            string value;
+            int k = 0;
+            while(1) {
+                k++;
+                if (k == 10) {
+                    cout << "value cannot be more than ten items!" << endl;
+                    break;
+                }
+                cin >> value;
+                if (value == "#" )
+                    break;
+                else
+                    val.push_back(value);
+            }
+            if (db.insert(key, val))
                 cout << "Insert operation complete\n";
             else
                 cout << "can't insert\n";
@@ -197,14 +215,21 @@ void run() {
             cout << "find operation\n";
             cout << "insert key:\n";
             cin >> key;
-            if (char*value = db.find(key)) {
-                cout << "value is: " << value << endl;
+            vector<string> val = db.find(key);
+            if (val.size() != 0) {
+                for (int i = 0; i < val.size(); i++) {
+                    if (val[i].length() != 0)
+                        cout << "the " << i << "th  value is: " << val[i] << endl;
+                    else
+                        break;
+                }
                 cout << "Find operation complete\n";
             }
             else
                 cout<<"No corresponding value found\n";
 
         }
+        /*
         if (n == 3) {
             char key[KEYSIZE_MAX];
             char value[VALUESIZE_MAX];
@@ -218,6 +243,7 @@ void run() {
             else
                 cout << "cannot be replaced\n";
         }
+         */
         if (n == 4) {
             char key[KEYSIZE_MAX];
             cout << "delete operation\n";
@@ -229,11 +255,13 @@ void run() {
             else
                 cout << "Could not find the key\n";
         }
+        /*
         if (n == 5) {
             cout << "print operation\n";
             db.traversal();
             cout << "The print operation is complete\n";
         }
+         */
         cout << "Enter 1 for insert operation, enter 2 for search operation, enter 3 for replacement operation, enter 4 for delete operation, enter 5 to print the entire database, enter -1 to return to the previous menu\n";
         cin >> n;
 
