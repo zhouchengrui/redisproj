@@ -4,6 +4,7 @@
 #include <map>					 //测试时存储随机字符串
 #include "Hash.h"
 #include "Hash.cpp"
+#include "exception.h"
 #define TEST_NUM 1000000
 using namespace std;
 
@@ -18,6 +19,40 @@ int main() {
     cout << "Enter 1 for demonstration test, enter 2 for performance test, enter 0 to enter the interactive interface, enter -1 to exit the program\n";
     int num;
     cin >> num;
+    while(cin.fail()){
+        try{
+            throw InvalidType{};
+        }catch (const Myexcept &e)
+        {
+            cerr << e.what() << '\n' << endl;
+        }
+        cin.clear();
+        cin.ignore();
+        cin >> num;
+    }
+//    try
+//    {
+//        cin >> num;
+//        if(cin.fail()){
+//            while(cin.fail()){
+//                // get rid of failure state
+//                cin.clear();
+//                cin.ignore();
+//                throw InvalidType{};
+//                cin >> num;
+//            }
+//            // discard 'bad' character(s)
+//            //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n') ;
+//            // cin.ignore(numeric_limits<streamsize>::max(), '\n');
+//        }
+//        if(num < -1 || num > 2){
+//            throw InvalidNumber{};
+//        }
+//    }
+//    catch (const Myexcept &e)
+//    {
+//        cerr << e.what() << '\n' << endl;
+//    }
     while (num != -1) {
         if (num == 1)
 //            test_correct();
@@ -168,6 +203,28 @@ void run() {
     cout << "Enter 0 to initialize random strings, enter 1 to insert, enter 2 to search, enter 3 to replace, enter 4 to delete, enter 5 to print the entire database, and -1 to return to the previous menu\n";
     int n;
     cin >> n;
+    while(cin.fail()){
+        try{
+            throw InvalidType{};
+        }catch (const Myexcept &e)
+        {
+            cerr << e.what() << '\n' << endl;
+        }
+        cin.clear();
+        cin.ignore();
+        cin >> n;
+    }
+    try
+    {
+        if(n < -1 || n > 5){
+            throw InvalidNumber{};
+        }
+    }
+    catch (const Myexcept &e)
+    {
+        cerr << e.what() << '\n' << endl;
+        cout << e.what() << '\n' << endl;
+    }
     while (n != -1) {
         /*
         if (n == 0) {

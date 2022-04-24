@@ -1,5 +1,7 @@
 #pragma once
 #include <string>                  //仅在输入文件名并创建文件时使用
+#include <compare>
+#include <vector>
 using namespace std;
 #define KEYSIZE_MAX 8        //索引字符串的最大长度
 #define VALUESIZE_MAX 8   //数据字符串的最大长度
