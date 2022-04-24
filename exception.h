@@ -36,5 +36,6 @@ class InvalidType:public Myexcept
 public:
     InvalidType(string_view str = "Please input a valid type") : Myexcept{str} {
         cout << "Please input a valid type" << '\n' << endl;
+        cout << "Please input a valid number between -1 and 2:" << '\n' << endl;
     }
 };

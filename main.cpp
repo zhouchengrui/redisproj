@@ -32,19 +32,6 @@ int main() {
     }
 //    try
 //    {
-//        cin >> num;
-//        if(cin.fail()){
-//            while(cin.fail()){
-//                // get rid of failure state
-//                cin.clear();
-//                cin.ignore();
-//                throw InvalidType{};
-//                cin >> num;
-//            }
-//            // discard 'bad' character(s)
-//            //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n') ;
-//            // cin.ignore(numeric_limits<streamsize>::max(), '\n');
-//        }
 //        if(num < -1 || num > 2){
 //            throw InvalidNumber{};
 //        }
