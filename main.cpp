@@ -30,16 +30,16 @@ int main() {
         cin.ignore();
         cin >> num;
     }
-//    try
-//    {
-//        if(num < -1 || num > 2){
-//            throw InvalidNumber{};
-//        }
-//    }
-//    catch (const Myexcept &e)
-//    {
-//        cerr << e.what() << '\n' << endl;
-//    }
+    try
+    {
+        if(num < -1 || num > 2){
+            throw InvalidNumber{};
+        }
+    }
+    catch (const Myexcept &e)
+    {
+        cerr << e.what() << '\n' << endl;
+    }
     while (num != -1) {
         if (num == 1)
 //            test_correct();
@@ -210,7 +210,6 @@ void run() {
     catch (const Myexcept &e)
     {
         cerr << e.what() << '\n' << endl;
-        cout << e.what() << '\n' << endl;
     }
     while (n != -1) {
         /*
