@@ -90,6 +90,22 @@ DB::DB(string s) {
 	}
 }
 
+bool findDatabase(string s){
+    string idxName = s + ".idx";
+    string datName = s + ".dat";
+//    cout << "idxName : " << idxName << endl;
+    string idxPath =  "./" + s + ".idx";
+    string datPath = "./" + s + ".dat";
+    FILE* fp1 = fopen(idxPath.c_str(), "rb");
+    FILE* fp2 = fopen(datPath.c_str(), "rb");
+    if ((fp1 == NULL) || (fp2 == NULL)){
+        return false;
+    }
+    fclose(fp1);
+    fclose(fp2);
+    return true;
+}
+
 
 int DB::open() {
 	cout << "Db has been open.\n";
@@ -125,9 +141,6 @@ int DB::close() {
 	cout << "Db has been closed.\n";
 	return 1;
 }
-
-
-
 
 
 unsigned int DB::hash(const char* key) {
@@ -324,7 +337,12 @@ int DB::insert(char* key, vector<string> val) {
 	}
 }
 
-
+void DB::clear() {
+    string idxPath = "./" + idxName;
+    string datPath = "./" + datName;
+    remove(idxPath.c_str());
+    remove(datPath.c_str());
+}
 
 
 /*
@@ -403,9 +421,3 @@ void DB::traversal() {
 }
  */
 
-void DB::clear() {
-    string idxPath = "./" + idxName;
-    string datPath = "./" + datName;
-	remove(idxPath.c_str());
-	remove(datPath.c_str());
-}

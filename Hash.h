@@ -16,6 +16,8 @@ struct Idx {
     bool isDelete;
 };
 
+bool findDatabase(string s);
+
 class DB {
 public:
     DB(string fileName);			                    //创建两个文件且初始化数据库，若文件已存在则什么都不做
@@ -26,7 +28,7 @@ public:
     bool del(char* key);								//删除key，返回true，否则返回false
     int insert(char* key, vector<string> val);           //插入key及value，返回1，若已存在该key，返回0
     //bool replace(char* key, char* value);      //替换key对应的value，找不到key返回false，替换成功返回true
-   // void traversal();                                      //打印数据库所有key及对应value
+    //void traversal();                                      //打印数据库所有key及对应value
     void clear();										 //删除数据库的两个文件
 private:
     Idx* find_key(const char*key);                //寻找key对应索引结构体,返回结构体的指针，否则返回NULL
