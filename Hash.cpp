@@ -166,7 +166,7 @@ vector<string>  DB::find(const char* key) {
             if (Idx_find->len_value[i] == 0)
                 break;
             cout << "data lens : " <<  Idx_find->len_value[i] << endl;
-            char*value = new char[Idx_find->len_value[i] + 1];
+            char* value = new char[Idx_find->len_value[i] + 1];
             fseek(fp2, sizeof(int) + Idx_find->value_off, pos);
             fread(value, sizeof(char), Idx_find->len_value[i] + 1, fp2);
             pos += Idx_find->len_value[i] + 1;
@@ -213,10 +213,12 @@ int DB::insert(char* key, vector<string> val) {
 		//initialize the new Index struct
 		Idx_new.len_key = strlen(key);
         int total_len = 0;
-        for (int i = 0; i < val.size(); i++) {
-            cout << "debug " << val[i] << endl;
-            Idx_new.len_value[i] = val[i].length() + 1;
-            total_len += val[i].length() + 1;
+        int temp_i = 0;
+        for(auto item: val){
+            cout << "debug " << item << endl;
+            Idx_new.len_value[temp_i] = item.length() + 1;
+            total_len += item.length() + 1;
+            temp_i++;
         }
 		//Idx_new.len_value = strlen(value);
         last_idx_off += 1;
@@ -225,17 +227,21 @@ int DB::insert(char* key, vector<string> val) {
 		Idx_new.off_next = last_idx_off;
 		Idx_new.value_off = last_dat_off;
         cout << "data :  " << Idx_new.value_off << endl;
-		last_dat_off += (total_len + 1) * sizeof(char);
+		last_dat_off += (total_len + ) * sizeof(char);
+        cout<< "length of written data:" << last_dat_off <<endl;
+        cout<<"length of vector" << sizeof(val)<<endl;
 		for (int i = 0; i < Idx_new.len_key; i++) {
 			Idx_new.key[i] = key[i];
 		}
 		fseek(fp1, sizeof(Idx)*Idx_new.off + sizeof(int), 0);
 		fwrite(&Idx_new, sizeof(Idx), 1, fp1);
 		int pos = 0;
-        for (int i = 0; i < val.size(); i++) {
+        temp_i=0;
+        for(auto item: val){
             fseek(fp2, sizeof(int) + Idx_new.value_off, pos);
-            fwrite(val[i].c_str(), sizeof(char), Idx_new.len_value[i] + 1, fp2);
-            pos += Idx_new.len_value[i] + 1;
+            fwrite(item.c_str(), sizeof(char), Idx_new.len_value[temp_i] + 1, fp2);
+            pos += Idx_new.len_value[temp_i] + 1;
+            temp_i++;
         }
 		//fwrite(value, sizeof(char), Idx_new.len_value + 1, fp2);
 		fflush(fp1);
