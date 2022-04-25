@@ -225,7 +225,7 @@ int DB::insert(char* key, vector<string> val) {
 		Idx_new.off_next = last_idx_off;
 		Idx_new.value_off = last_dat_off;
         cout << "data :  " << Idx_new.value_off << endl;
-		last_dat_off += (total_len + 1) * sizeof(char);
+		last_dat_off += (total_len + 5) * sizeof(char);
 		for (int i = 0; i < Idx_new.len_key; i++) {
 			Idx_new.key[i] = key[i];
 		}
@@ -345,8 +345,9 @@ void DB::clear() {
 }
 
 
+//update single value
 /*
-bool DB::replace(char*key, char*value) {
+bool DB::replace(char*key, int k, char*value) {
 	//cout << "replace function\n";
 	Idx* Idx_find = find_key(key);
 	if (Idx_find == NULL) {
@@ -366,7 +367,8 @@ bool DB::replace(char*key, char*value) {
 		return true;
 	}
 }
- */
+*/
+
 
 Idx* DB::find_key(const char* key) {
 	int len = strlen(key);
