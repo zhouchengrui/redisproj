@@ -106,7 +106,6 @@ bool findDatabase(string s){
     return true;
 }
 
-
 int DB::open() {
 	cout << "Db has been open.\n";
     string idxPath = "./" + idxName;
@@ -185,6 +184,45 @@ vector<string>  DB::find(const char* key) {
 	}
 }
 
+void SplitStringComma(string s, vector<string> &v){
+    string temp = "";
+    for(int i=0;i<s.length();++i){
+        if(s[i]=='\t'){
+            v.push_back(temp);
+            temp = "";
+        }
+        else{
+            temp.push_back(s[i]);
+        }
+    }
+    v.push_back(temp);
+}
+
+int  DB::insert_file(string file_name) {
+    cout<<"File path received:"<<file_name<<endl;
+    ifstream infile (file_name);
+    string line;
+    string temp;
+    char* key;
+    while (std::getline(infile, line))
+    {
+        vector<string> row_values;
+        SplitStringComma(line,  row_values);
+        temp = row_values.front();
+        key = &temp[0];
+        row_values.erase(row_values.begin());
+        //cout<<"Key="<<key<<endl;
+        //cout<<"Values="<<endl;
+        /*for(auto i:row_values){
+            cout<<i<<",";
+        }
+        cout<<endl;*/
+        insert(key,row_values);
+    }
+    return 1;
+}
+
+
 bool DB::del(char* key) {
 	Idx* Idx_find = find_key(key);
 	if (Idx_find == NULL) {
@@ -202,6 +240,7 @@ bool DB::del(char* key) {
 }
 
 int DB::insert(char* key, vector<string> val) {
+    cout<<"Key insert:"<<key<<endl;
 	if (find_key(key)) {
 		return 0;
 	}

@@ -2,6 +2,9 @@
 #include <string>                  //仅在输入文件名并创建文件时使用
 #include <compare>
 #include <vector>
+#include <fstream>
+#include <iterator>
+#include <sstream>
 using namespace std;
 #define KEYSIZE_MAX 8        //索引字符串的最大长度
 #define VALUESIZE_MAX 8   //数据字符串的最大长度
@@ -24,6 +27,7 @@ public:
     unsigned int hash(const char* key);      //散列函数
     int open();												//打开数据库的两个文件，并载入last_idx_off和last_value_off两个值
     int close();                                             //保存关闭数据库的两个文件，并存入last_idx_off和last_value_off的值到文件
+    int insert_file(string file_name);
     vector<string> find(const char* key);                   //寻找key对应的value，返回value字符串指针,否则返回NULL
     bool del(char* key);								//删除key，返回true，否则返回false
     int insert(char* key, vector<string> val);           //插入key及value，返回1，若已存在该key，返回0

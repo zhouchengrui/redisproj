@@ -218,7 +218,7 @@ void run() {
     }else{
         DB db(name);
         db.open();
-        cout << "Enter 0 to initialize random strings, enter 1 to insert, enter 2 to search, enter 3 to replace, enter 4 to delete, enter 5 to print the entire database, enter 6 to delete the entire database, and -1 to return to the previous menu\n";
+        cout << "Enter 0 to initialize random strings, enter 1 to insert, enter 2 to search, enter 3 to replace, enter 4 to delete, enter 5 to print the entire database, enter 6 to delete the entire database, 7 for providing tsv file and -1 to return to the previous menu\n";
         int n;
         cin >> n;
         while(cin.fail()){
@@ -346,6 +346,16 @@ void run() {
                 if(temp == 1){
                     db.clear();
                 }
+            }
+            if (n == 7) {
+                string file_name;
+                cout <<"Enter path of the file:"<<endl;
+                cin>>file_name;
+                if (db.insert_file(file_name)) {
+                    cout << "file insert complete\n";
+                }
+                else
+                    cout << "Could not complete file insert\n";
             }
             cout << "Enter 1 for insert operation, enter 2 for search operation, enter 3 for replacement operation, enter 4 for delete operation, enter 5 to print the entire database, enter -1 to return to the previous menu\n";
             cin >> n;
