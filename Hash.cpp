@@ -162,9 +162,8 @@ vector<string>  DB::find(const char* key) {
 		unsigned int n = Idx_find->value_off;
         int pos = 0;
         string v = "";
-        for (int i = 0; i < 10; i++) {
-            if (Idx_find->len_value[i] == 0)
-                break;
+        int i=0;
+        while(Idx_find->len_value[i] != 0){
             cout << "data lens : " <<  Idx_find->len_value[i] << endl;
             char* value = new char[Idx_find->len_value[i] + 1];
             fseek(fp2, sizeof(int) + Idx_find->value_off, pos);
@@ -174,6 +173,7 @@ vector<string>  DB::find(const char* key) {
             val.push_back(v);
             cout << "data is : " <<  value << endl;
             v = "";
+            i++;
         }
         /*
 		char*value = new char[Idx_find->len_value + 1];
@@ -227,7 +227,7 @@ int DB::insert(char* key, vector<string> val) {
 		Idx_new.off_next = last_idx_off;
 		Idx_new.value_off = last_dat_off;
         cout << "data :  " << Idx_new.value_off << endl;
-		last_dat_off += (total_len + ) * sizeof(char);
+		last_dat_off += (total_len + 5) * sizeof(char);
         cout<< "length of written data:" << last_dat_off <<endl;
         cout<<"length of vector" << sizeof(val)<<endl;
 		for (int i = 0; i < Idx_new.len_key; i++) {
@@ -350,9 +350,7 @@ void DB::clear() {
     remove(datPath.c_str());
 }
 
-
-/*
-bool DB::replace(char*key, char*value) {
+bool DB::replace(char*key,vector<string> val) {
 	//cout << "replace function\n";
 	Idx* Idx_find = find_key(key);
 	if (Idx_find == NULL) {
@@ -360,11 +358,24 @@ bool DB::replace(char*key, char*value) {
 	}
 	else {
 		unsigned int n = Idx_find->value_off;
-		Idx_find->len_value = strlen(value);
+        int total_len = 0;
+        int temp_i = 0;
+        for(auto item: val){
+            cout << "debug " << item << endl;
+            Idx_find->len_value[temp_i] = item.length() + 1;
+            total_len += item.length() + 1;
+            temp_i++;
+        }
 		Idx_find->value_off = last_dat_off;
-		last_dat_off += (Idx_find->len_value + 1) * sizeof(char);
-		fseek(fp2, sizeof(int) + Idx_find->value_off, 0);
-		fwrite(value, sizeof(char), Idx_find->len_value + 1, fp2);//replace value
+        last_dat_off += (total_len + 5) * sizeof(char);
+        int pos = 0;
+        temp_i=0;
+        for(auto item: val){
+            fseek(fp2, sizeof(int) + Idx_find->value_off, pos);
+            fwrite(item.c_str(), sizeof(char), Idx_find->len_value[temp_i] + 1, fp2);
+            pos += Idx_find->len_value[temp_i] + 1;
+            temp_i++;
+        }
 		fseek(fp1, sizeof(int) + sizeof(Idx)*Idx_find->off, 0);
 		fwrite(Idx_find, sizeof(Idx), 1, fp1);//renew index file
 		fflush(fp1);
@@ -372,7 +383,6 @@ bool DB::replace(char*key, char*value) {
 		return true;
 	}
 }
- */
 
 Idx* DB::find_key(const char* key) {
 	int len = strlen(key);

@@ -179,7 +179,19 @@ void test_performance() {
 //    db.close();
 //    db.clear();
 //}
-
+void SplitString(string s, vector<string> &v){
+    string temp = "";
+    for(int i=0;i<s.length();++i){
+        if(s[i]==','){
+            v.push_back(temp);
+            temp = "";
+        }
+        else{
+            temp.push_back(s[i]);
+        }
+    }
+    v.push_back(temp);
+}
 
 void run() {
     string name;
@@ -253,21 +265,11 @@ void run() {
                 cout << "insert key:\n";
                 cin >> key;
                 cout << "insert value (enter # at the end of value):\n";
-                string value;
-                int k = 0;
-                while(1) {
-                    k++;
-                    if (k == 10) {
-                        cout << "value cannot be more than ten items!" << endl;
-                        break;
-                    }
-                    cin >> value;
-                    if (value == "#" )
-                        break;
-                    else
-                        val.push_back(value);
-                }
-                if (db.insert(key, val))
+                string value="";
+                cin >> value;
+                vector<string> values;
+                SplitString(value,values);
+                if (db.insert(key, values))
                     cout << "Insert operation complete\n";
                 else
                     cout << "can't insert\n";
@@ -290,22 +292,23 @@ void run() {
                 else
                     cout<<"No corresponding value found\n";
 
-            }
-            /*
+            }/*
             if (n == 3) {
                 char key[KEYSIZE_MAX];
                 char value[VALUESIZE_MAX];
-                cout << "replace operation\n";
+                int ind;
+                cout << "update operation\n";
                 cout << "insert key:\n";
                 cin >> key;
-                cout << "insert value:\n";
+                cout << "insert index that needs to be updated:\n";
+                cin >> ind;
+                cout << "Insert Value:" << endl;
                 cin >> value;
-                if(db.replace(key, value))
-                    cout << "Replace operation complete\n";
+                if(db.update(key,ind,value))
+                    cout << "Update operation complete\n";
                 else
-                    cout << "cannot be replaced\n";
-            }
-             */
+                    cout << "cannot be updated\n";
+            }*/
             if (n == 4) {
                 char key[KEYSIZE_MAX];
                 cout << "delete operation\n";
