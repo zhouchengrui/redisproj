@@ -53,6 +53,17 @@ int main() {
         cout << "menu\n";
         cout << "Enter 1 for demonstration test, enter 2 for performance test, enter 0 to enter the interactive interface, enter -1 to exit the program\n";
         cin >> num;
+        while(cin.fail()){
+            try{
+                throw InvalidType{};
+            }catch (const Myexcept &e)
+            {
+                cerr << e.what() << '\n' << endl;
+            }
+            cin.clear();
+            cin.ignore();
+            cin >> num;
+        }
     }
     return 0;
 }
@@ -193,6 +204,30 @@ void SplitString(string s, vector<string> &v){
     v.push_back(temp);
 }
 
+char *randstr(char *str, const int len)
+{
+    srand(time(NULL));
+    int i;
+    for (i = 0; i < len; ++i)
+    {
+        switch ((rand() % 3))
+        {
+            case 1:
+                str[i] = 'A' + rand() % 26;
+                break;
+            case 2:
+                str[i] = 'a' + rand() % 26;
+                break;
+            default:
+                str[i] = '0' + rand() % 10;
+                break;
+        }
+    }
+    str[++i] = '\0';
+    return str;
+}
+
+
 void run() {
     string name;
     cout << "Enter name for db, if you want to delete a database, input delete + '-' + name of database:\n";
@@ -218,7 +253,7 @@ void run() {
     }else{
         DB db(name);
         db.open();
-        cout << "Enter 0 to initialize random strings, enter 1 to insert, enter 2 to search, enter 3 to replace, enter 4 to delete, enter 5 to print the entire database, enter 6 to delete the entire database, 7 for providing tsv file and -1 to return to the previous menu\n";
+        cout << "Enter 0 to initialize random strings, enter 1 to insert, enter 2 to search, enter 3 to replace, enter 4 to delete, enter 5 to print the entire database, enter 6 for providing tsv file and -1 to return to the previous menu\n";
         int n;
         cin >> n;
         while(cin.fail()){
@@ -243,21 +278,19 @@ void run() {
             cerr << e.what() << '\n' << endl;
         }
         while (n != -1) {
-            /*
-            if (n == 0) {
-                srand(time(NULL));
-                map<char*, char*> m;
-                map<char*, char*>::iterator it;
-                for (int i = 0; i < TEST_NUM; i++) {
-                    char*key = randomString(KEYSIZE_MAX - 1);
-                    char*value = randomString(VALUESIZE_MAX - 1);
-                    m.insert(map<char*, char*>::value_type(key, value));
-                }
-                for (it = m.begin(); it != m.end(); it++) {
-                    db.insert(it->first, it->second);
-                }
-            }
-             */
+//            if (n == 0) {
+//                srand(time(NULL));
+//                map<char*, char*> m;
+//                map<char*, char*>::iterator it;
+//                for (int i = 0; i < TEST_NUM; i++) {
+//                    char*key = randomString(KEYSIZE_MAX - 1);
+//                    char*value = randomString(VALUESIZE_MAX - 1);
+//                    m.insert(map<char*, char*>::value_type(key, value));
+//                }
+//                for (it = m.begin(); it != m.end(); it++) {
+//                    db.insert(it->first, reinterpret_cast<const vector<basic_string<char>> &>(it->second));
+//                }
+//            }
             if (n == 1) {
                 char key[KEYSIZE_MAX];
                 vector<string> val;
@@ -328,26 +361,6 @@ void run() {
             }
              */
             if (n == 6) {
-                cout << "Are you sure to delete the database? \n" << endl;
-                cout << "Press 1 to delete, press 0 to return \n" << endl;
-                int temp;
-                cin >> temp;
-                while(cin.fail()){
-                    try{
-                        throw InvalidType{};
-                    }catch (const Myexcept &e)
-                    {
-                        cerr << e.what() << '\n' << endl;
-                    }
-                    cin.clear();
-                    cin.ignore();
-                    cin >> temp;
-                }
-                if(temp == 1){
-                    db.clear();
-                }
-            }
-            if (n == 7) {
                 string file_name;
                 cout <<"Enter path of the file:"<<endl;
                 cin>>file_name;
@@ -357,8 +370,19 @@ void run() {
                 else
                     cout << "Could not complete file insert\n";
             }
-            cout << "Enter 1 for insert operation, enter 2 for search operation, enter 3 for replacement operation, enter 4 for delete operation, enter 5 to print the entire database, enter -1 to return to the previous menu\n";
+            cout << "Enter 0 to initialize random strings, enter 1 to insert, enter 2 to search, enter 3 to replace, enter 4 to delete, enter 5 to print the entire database, enter 6 for providing tsv file and -1 to return to the previous menu\n";
             cin >> n;
+            while(cin.fail()){
+                try{
+                    throw InvalidType{};
+                }catch (const Myexcept &e)
+                {
+                    cerr << e.what() << '\n' << endl;
+                }
+                cin.clear();
+                cin.ignore();
+                cin >> n;
+            }
 
         }
         db.close();
