@@ -163,14 +163,14 @@ vector<string>  DB::find(const char* key) {
         string v = "";
         int i=0;
         while(Idx_find->len_value[i] != 0){
-            cout << "data lens : " <<  Idx_find->len_value[i] << endl;
+            //cout << "data lens : " <<  Idx_find->len_value[i] << endl;
             char* value = new char[Idx_find->len_value[i] + 1];
             fseek(fp2, sizeof(int) + Idx_find->value_off, pos);
             fread(value, sizeof(char), Idx_find->len_value[i] + 1, fp2);
             pos += Idx_find->len_value[i] + 1;
             v = v.insert(0, value);
             val.push_back(v);
-            cout << "data is : " <<  value << endl;
+            //cout << "data is : " <<  value << endl;
             v = "";
             i++;
         }
@@ -211,7 +211,7 @@ int  DB::insert_file(string file_name) {
         temp = row_values.front();
         key = &temp[0];
         row_values.erase(row_values.begin());
-        //cout<<"Key="<<key<<endl;
+        cout<<"Key="<<key<<endl;
         //cout<<"Values="<<endl;
         /*for(auto i:row_values){
             cout<<i<<",";
@@ -240,7 +240,7 @@ bool DB::del(char* key) {
 }
 
 int DB::insert(char* key, vector<string> val) {
-    cout<<"Key insert:"<<key<<endl;
+    //cout<<"Key insert:"<<key<<endl;
 	if (find_key(key)) {
 		return 0;
 	}
@@ -254,7 +254,7 @@ int DB::insert(char* key, vector<string> val) {
         int total_len = 0;
         int temp_i = 0;
         for(auto item: val){
-            cout << "debug " << item << endl;
+            //cout << "debug " << item << endl;
             Idx_new.len_value[temp_i] = item.length() + 1;
             total_len += item.length() + 1;
             temp_i++;
@@ -265,10 +265,10 @@ int DB::insert(char* key, vector<string> val) {
 		Idx_new.isDelete = false;
 		Idx_new.off_next = last_idx_off;
 		Idx_new.value_off = last_dat_off;
-        cout << "data :  " << Idx_new.value_off << endl;
+        //cout << "data :  " << Idx_new.value_off << endl;
 		last_dat_off += (total_len + 5) * sizeof(char);
-        cout<< "length of written data:" << last_dat_off <<endl;
-        cout<<"length of vector" << sizeof(val)<<endl;
+        //cout<< "length of written data:" << last_dat_off <<endl;
+        //cout<<"length of vector" << sizeof(val)<<endl;
 		for (int i = 0; i < Idx_new.len_key; i++) {
 			Idx_new.key[i] = key[i];
 		}
@@ -458,21 +458,34 @@ Idx* DB::find_key(const char* key) {
 	return NULL;
 }
 
-/*
-void DB::traversal() {
-	fseek(fp1, sizeof(int), 0);
+
+vector<string> DB::query(int k, string val) {
 	Idx idx;
 	int i = 1;
+    vector<string> ans;
+    cout << "The " << k << "th value is : " << val << endl;
+    fseek(fp1, sizeof(int), 0);
 	while (fread(&idx, sizeof(Idx), 1, fp1) != 0) {
 		if ((idx.isDelete) || (idx.off == 0))
 			continue;
-		char*value = new char[idx.len_value + 1];
-		fseek(fp2, sizeof(int) + idx.value_off, 0);
-		fread(value, sizeof(char), idx.len_value + 1, fp2);
-		cout <<i<< " key-------- " << idx.key << " ---------value-------- " << value << endl;
+        int lens = 0;
+        for (int j = 0; j < k; j++) {
+            lens += idx.len_value[j] + 1;
+        }
+		char*value = new char[idx.len_value[k] + 1];
+		fseek(fp2, sizeof(int) + idx.value_off + lens, 0);
+		fread(value, sizeof(char), idx.len_value[k] + 1, fp2);
+        string tmp = "";
+        tmp = tmp.insert(0, value);
+        if (tmp == val) {
+            cout << "Key " << i << " : " << idx.key << endl;
+            ans.push_back(idx.key);
+        }
 		++i;
 		delete value;
 	}
+    return ans;
 }
- */
+
+
 
