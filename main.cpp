@@ -218,7 +218,7 @@ void run() {
     }else{
         DB db(name);
         db.open();
-        cout << "Enter 0 to initialize random strings, enter 1 to insert, enter 2 to search, enter 3 to replace, enter 4 to delete, enter 5 to print the entire database, enter 6 to delete the entire database, 7 for providing tsv file and -1 to return to the previous menu\n";
+        cout << "Enter 0 to initialize random strings, enter 1 to insert, enter 2 to search, enter 3 to replace, enter 4 to delete, enter 5 to query, enter 6 to delete the entire database, 7 for providing tsv file and -1 to return to the previous menu\n";
         int n;
         cin >> n;
         while(cin.fail()){
@@ -264,7 +264,7 @@ void run() {
                 cout << "insert operation\n";
                 cout << "insert key:\n";
                 cin >> key;
-                cout << "insert value (enter # at the end of value):\n";
+                cout << "insert value (use comma to split value):\n";
                 string value="";
                 cin >> value;
                 vector<string> values;
@@ -320,13 +320,18 @@ void run() {
                 else
                     cout << "Could not find the key\n";
             }
-            /*
+
             if (n == 5) {
-                cout << "print operation\n";
-                db.traversal();
-                cout << "The print operation is complete\n";
+                int k;
+                string val;
+                cout << "the position of value : " << endl;
+                cin >> k;
+                cout << "the value is : " << endl;
+                cin >> val;
+                vector<string> ans = db.query(k, val);
+                cout << "The query operation is complete\n";
             }
-             */
+
             if (n == 6) {
                 cout << "Are you sure to delete the database? \n" << endl;
                 cout << "Press 1 to delete, press 0 to return \n" << endl;
@@ -357,7 +362,7 @@ void run() {
                 else
                     cout << "Could not complete file insert\n";
             }
-            cout << "Enter 1 for insert operation, enter 2 for search operation, enter 3 for replacement operation, enter 4 for delete operation, enter 5 to print the entire database, enter -1 to return to the previous menu\n";
+            cout << "Enter 1 for insert operation, enter 2 for search operation, enter 3 for replacement operation, enter 4 for delete operation, enter 5 to query, enter -1 to return to the previous menu\n";
             cin >> n;
 
         }
