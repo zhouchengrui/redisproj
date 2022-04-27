@@ -6,7 +6,7 @@
 #include <iterator>
 #include <sstream>
 using namespace std;
-#define KEYSIZE_MAX 8        //索引字符串的最大长度
+#define KEYSIZE_MAX 20        //索引字符串的最大长度
 #define VALUESIZE_MAX 8   //数据字符串的最大长度
 #define HASH_SIZE  20000003 //散列表的大小
 struct Idx {
