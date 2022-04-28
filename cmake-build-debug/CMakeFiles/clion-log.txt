@@ -1,4 +1,4 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /Users/zll/Desktop/v1/redisproj -B /Users/zll/Desktop/v1/redisproj/cmake-build-debug
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /Users/zll/Desktop/v1/redisproj -B /Users/zll/Desktop/v1/redisproj
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/zll/Desktop/v1/redisproj/cmake-build-debug
+-- Build files have been written to: /Users/zll/Desktop/v1/redisproj

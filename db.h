@@ -15,7 +15,7 @@ public:
     unsigned int hash(const char* key);                 //hash function
     bool open();												//open db files. Load last_idx_off and last_value_off
     bool close();                                             //close db files. store last_idx_off and last_value_off.
-    bool insert_file(string file_name);                      //insert data with csv/tsv files
+    bool insert_file(string file_name, int num);                      //insert data with csv/tsv files, num is the max rows
     vector<string> find(const char* key);                    //look for the value. return null if not found
     bool del(char* key);								  //delete key
     bool insert(char* key, vector<string> val);           //insert key-value. if already exists, return false.

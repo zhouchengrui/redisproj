@@ -14,7 +14,7 @@ DB::DB(string s) {
     fileName = s;
     idxName = fileName + ".idx";
     datName = fileName + ".dat";
-    cout << "idxName : " << idxName << endl;
+    //cout << "idxName : " << idxName << endl;
     string idxPath =  "./" + fileName + ".idx";
     string datPath = "./" + fileName + ".dat";
     fp1 = fopen(idxPath.c_str(), "rb");
@@ -67,14 +67,14 @@ bool DB::open() {
     last_idx_off = num;
     fread(&num, sizeof(int), 1, fp2);
     last_dat_off = num;
-    cout << "last_idx_off is : " << last_idx_off << endl;
-    cout << "last_dat_off is : " << last_dat_off << endl;
+    //cout << "last_idx_off is : " << last_idx_off << endl;
+    //cout << "last_dat_off is : " << last_dat_off << endl;
     return true;
 }
 
 bool DB::close() {
-    cout << "last_idx_off is : " << last_idx_off << endl;
-    cout << "last_dat_off is : " << last_dat_off << endl;
+    //cout << "last_idx_off is : " << last_idx_off << endl;
+    //cout << "last_dat_off is : " << last_dat_off << endl;
     rewind(fp1);
     rewind(fp2);
     fwrite(&last_dat_off, sizeof(int), 1, fp2);
@@ -136,7 +136,7 @@ void SplitStringComma(string s, vector<string> &v){
     v.push_back(temp);
 }
 
-bool DB::insert_file(string file_name) {
+bool DB::insert_file(string file_name, int num) {
     cout<<"File path received:"<<file_name<<endl;
     ifstream infile (file_name);
     string line;
@@ -144,12 +144,14 @@ bool DB::insert_file(string file_name) {
     char* key;
     while (std::getline(infile, line))
     {
+        num--;
+        if (num < 0) break;
         vector<string> row_values;
         SplitStringComma(line,  row_values);
         temp = row_values.front();
         key = &temp[0];
         row_values.erase(row_values.begin());
-        cout<<"Key="<<key<<endl;
+        //cout<<"Key="<<key<<endl;
         insert(key,row_values);
     }
     return true;

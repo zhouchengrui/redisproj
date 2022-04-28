@@ -1,0 +1,4 @@
+/Users/zll/Desktop/v1/redisproj/CMakeFiles/microdb.dir
+/Users/zll/Desktop/v1/redisproj/CMakeFiles/performance_test.dir
+/Users/zll/Desktop/v1/redisproj/CMakeFiles/edit_cache.dir
+/Users/zll/Desktop/v1/redisproj/CMakeFiles/rebuild_cache.dir
