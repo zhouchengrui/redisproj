@@ -1,15 +1,14 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include <map>					 //测试时存储随机字符串
+#include <unordered_map>					 //测试时存储随机字符串
 #include "Hash.h"
 #include "Hash.cpp"
 #include "exception.h"
-#define TEST_NUM 1000000
+#define TEST_NUM 10
 using namespace std;
 
 
-char* randomString(int max);//make random string  length:(1~max)
 //void test_correct();
 void test_performance();
 void run();
@@ -57,11 +56,11 @@ int main() {
     return 0;
 }
 
-char* randomString(int max) {
-    int len = rand() % max;
+char* randomString(int max) {    //make random string  length:(1~max)
+    auto len = rand() % max + 1;
     len = ((len == 0) ? max : len);
-    char* s = new char[max + 1];
-    for (int j = 0; j < len; j++) {
+    auto s = new char[max + 1];
+    for (auto j = 0; j < len; j++) {
         s[j] = 'a' + (rand() % 26);
     }
     s[len] = '\0';
@@ -179,18 +178,36 @@ void test_performance() {
 //    db.close();
 //    db.clear();
 //}
+
+
 void SplitString(string s, vector<string> &v){
     string temp = "";
-    for(int i=0;i<s.length();++i){
-        if(s[i]==','){
+    for(auto i : temp){    // import features of modern c++
+        if(i ==','){
             v.push_back(temp);
             temp = "";
         }
         else{
-            temp.push_back(s[i]);
+            temp.push_back(i);
         }
     }
+//    for(int i=0;i<s.length();++i){
+//        if(s[i]==','){
+//            v.push_back(temp);
+//            temp = "";
+//        }
+//        else{
+//            temp.push_back(s[i]);
+//        }
+//    }
     v.push_back(temp);
+}
+
+
+void printVector(vector<string> list) {
+    for (auto it = list.begin(); it != list.end(); ++it)
+        cout << *it << " ";
+    cout << endl;
 }
 
 void run() {
@@ -243,21 +260,29 @@ void run() {
             cerr << e.what() << '\n' << endl;
         }
         while (n != -1) {
-            /*
             if (n == 0) {
                 srand(time(NULL));
-                map<char*, char*> m;
-                map<char*, char*>::iterator it;
+                unordered_map<char*, vector<string>> m;
+                unordered_map<char*, vector<string>>::iterator it;
+                vector<string> temp;
                 for (int i = 0; i < TEST_NUM; i++) {
                     char*key = randomString(KEYSIZE_MAX - 1);
-                    char*value = randomString(VALUESIZE_MAX - 1);
-                    m.insert(map<char*, char*>::value_type(key, value));
+                    while(m.contains(key)){
+                        char*key = randomString(KEYSIZE_MAX - 1);
+                    }
+                    for(auto j = 0; j < rand() % VALUENUM_MAX + 1; j++){
+                        string tempstr = randomString(KEYSIZE_MAX - 1);
+                        temp.push_back(tempstr);
+                    }
+                    m.insert(unordered_map<char*, vector<string>>::value_type(key, temp));
                 }
-                for (it = m.begin(); it != m.end(); it++) {
-                    db.insert(it->first, it->second);
+//                for (it = m.begin(); it != m.end(); it++) {
+//                    db.insert(it->first, it->second);
+//                }
+                for (const auto &[key, value] : m){
+                    db.insert(key, value);
                 }
             }
-             */
             if (n == 1) {
                 char key[KEYSIZE_MAX];
                 vector<string> val;
@@ -281,18 +306,23 @@ void run() {
                 cin >> key;
                 vector<string> val = db.find(key);
                 if (val.size() != 0) {
-                    for (int i = 0; i < val.size(); i++) {
-                        if (val[i].length() != 0)
-                            cout << "the " << i << "th  value is: " << val[i] << endl;
+                    auto i = 1;
+                    for (auto n:val) {
+                        if (n.length() != 0){
+                            cout << "the " << i << "th  value is: " << n << endl;
+                            i ++;
+                        }
                         else
                             break;
                     }
+                    printVector(val);
                     cout << "Find operation complete\n";
                 }
                 else
                     cout<<"No corresponding value found\n";
 
-            }/*
+            }
+            /*
             if (n == 3) {
                 char key[KEYSIZE_MAX];
                 char value[VALUESIZE_MAX];
@@ -320,7 +350,6 @@ void run() {
                 else
                     cout << "Could not find the key\n";
             }
-
             if (n == 5) {
                 int k;
                 string val;
@@ -331,7 +360,6 @@ void run() {
                 vector<string> ans = db.query(k, val);
                 cout << "The query operation is complete\n";
             }
-
             if (n == 6) {
                 cout << "Are you sure to delete the database? \n" << endl;
                 cout << "Press 1 to delete, press 0 to return \n" << endl;
