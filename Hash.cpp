@@ -186,15 +186,24 @@ vector<string>  DB::find(const char* key) {
 
 void SplitStringComma(string s, vector<string> &v){
     string temp = "";
-    for(int i=0;i<s.length();++i){
-        if(s[i]=='\t'){
+    for(auto i : s){
+        if(i =='\t'){
             v.push_back(temp);
             temp = "";
         }
         else{
-            temp.push_back(s[i]);
+            temp.push_back(i);
         }
     }
+//    for(int i=0;i<s.length();++i){
+//        if(s[i]=='\t'){
+//            v.push_back(temp);
+//            temp = "";
+//        }
+//        else{
+//            temp.push_back(s[i]);
+//        }
+//    }
     v.push_back(temp);
 }
 
@@ -290,7 +299,7 @@ int DB::insert(char* key, vector<string> val) {
 	if (Idx_new.isDelete) {
 		Idx_new.len_key = strlen(key);
         int total_len = 0;
-        for (int i = 0; i < val.size(); i++) {
+        for (auto i = 0; i < val.size(); i++) {
             Idx_new.len_value[i] = val[i].length() + 1;
             total_len += val[i].length() + 1;
         }
@@ -298,13 +307,13 @@ int DB::insert(char* key, vector<string> val) {
 		Idx_new.isDelete = false;
 		Idx_new.value_off = last_dat_off;
 		last_dat_off += (total_len + 1) * sizeof(char);
-		for (int i = 0; i < Idx_new.len_key; i++) {
+		for (auto i = 0; i < Idx_new.len_key; i++) {
 			Idx_new.key[i] = key[i];
 		}
 		fseek(fp1, sizeof(Idx)*Idx_new.off + sizeof(int), 0);
 		fwrite(&Idx_new, sizeof(Idx), 1, fp1);
         int pos = 0;
-        for (int i = 0; i < val.size(); i++) {
+        for (auto i = 0; i < val.size(); i++) {
             fseek(fp2, sizeof(int) + Idx_new.value_off, pos);
             fwrite(val[i].c_str(), sizeof(char), Idx_new.len_value[i] + 1, fp2);
             pos += Idx_new.len_value[i] + 1;
@@ -321,8 +330,8 @@ int DB::insert(char* key, vector<string> val) {
 			int flag = fread(&Idx_new, sizeof(Idx), 1, fp1);
 			if (flag == 0) { //no index in this place
 				Idx_new.len_key = strlen(key);
-                int total_len = 0;
-                for (int i = 0; i < val.size(); i++) {
+                auto total_len = 0;
+                for (auto i = 0; i < val.size(); i++) {
                     Idx_new.len_value[i] = val[i].length() + 1;
                     total_len += val[i].length() + 1;
                 }
@@ -338,8 +347,8 @@ int DB::insert(char* key, vector<string> val) {
 				}
 				fseek(fp1, sizeof(Idx)*Idx_new.off + sizeof(int), 0);
 				fwrite(&Idx_new, sizeof(Idx), 1, fp1);
-                int pos = 0;
-                for (int i = 0; i < val.size(); i++) {
+                auto pos = 0;
+                for (auto i = 0; i < val.size(); i++) {
                     fseek(fp2, sizeof(int) + Idx_new.value_off, pos);
                     fwrite(val[i].c_str(), sizeof(char), Idx_new.len_value[i] + 1, fp2);
                     pos += Idx_new.len_value[i] + 1;
@@ -352,8 +361,8 @@ int DB::insert(char* key, vector<string> val) {
 			}
 			if (Idx_new.isDelete) {
 				Idx_new.len_key = strlen(key);
-                int total_len = 0;
-                for (int i = 0; i < val.size(); i++) {
+                auto total_len = 0;
+                for (auto i = 0; i < val.size(); i++) {
                     Idx_new.len_value[i] = val[i].length() + 1;
                     total_len += val[i].length() + 1;
                 }
