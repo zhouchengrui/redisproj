@@ -174,7 +174,7 @@ bool DB::del(char* key) {
     }
 }
 
-bool DB::insert(char* key, vector<string> val) {
+bool DB::insert(char* key, vector<string>  val) {
     //cout<<"Key insert:"<<key<<endl;
     if (find_key(key)) {
         return false;
@@ -232,7 +232,7 @@ bool DB::insert(char* key, vector<string> val) {
         //Idx_new.len_value = strlen(value);
         Idx_new.isDelete = false;
         Idx_new.value_off = last_dat_off;
-        last_dat_off += (total_len + 1) * sizeof(char);
+        last_dat_off += (total_len + 5) * sizeof(char);
         for (int i = 0; i < Idx_new.len_key; i++) {
             Idx_new.key[i] = key[i];
         }
@@ -267,7 +267,7 @@ bool DB::insert(char* key, vector<string> val) {
                 Idx_new.isDelete = false;
                 Idx_new.off_next = last_idx_off;
                 Idx_new.value_off = last_dat_off;
-                last_dat_off += (total_len + 1) * sizeof(char);
+                last_dat_off += (total_len + 5) * sizeof(char);
                 for (int i = 0; i < Idx_new.len_key; i++) {
                     Idx_new.key[i] = key[i];
                 }
@@ -295,7 +295,7 @@ bool DB::insert(char* key, vector<string> val) {
                 //Idx_new.len_value = strlen(value);
                 Idx_new.isDelete = false;
                 Idx_new.value_off = last_dat_off;
-                last_dat_off += (total_len + 1) * sizeof(char);
+                last_dat_off += (total_len + 5) * sizeof(char);
                 for (int i = 0; i < Idx_new.len_key; i++) {
                     Idx_new.key[i] = key[i];
                 }
