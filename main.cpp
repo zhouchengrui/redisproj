@@ -42,12 +42,10 @@ void run() {
     string name;
     cin >> name;
     bool flag = true;
-    cout << name.substr(0, 7).compare("delete-") << endl;
+    // cout << name.substr(0, 7).compare("delete-") << endl;
     int compareValue = name.substr(0, 7).compare("delete-");
     if (compareValue == 0){
-        cout << name.length() << endl;
         name = name.substr (7, name.length());
-        cout << name << endl;
         flag = false;
     }
     if (flag == false) {
@@ -58,7 +56,7 @@ void run() {
         else {
             DB db(name);
             db.clear();
-            cout << "clear successfully!\n";
+            cout << "database-" << name << " has been successfully cleared!\n";
         }
     }
     else {
