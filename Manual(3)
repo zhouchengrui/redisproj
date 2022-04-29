@@ -1,0 +1,182 @@
+Manual
+
+*******************************************************
+a. Name and UNI
+
+1) Team Name: MicroDB
+
+2) Team Members:
+Name : Lulu            Uni : lz2761
+Name : Chengrui        Uni : cz2664
+Name : Shubham         Uni : sp3895
+
+*******************************************************
+b. Overall design of the project
+
+1) Build a key-value database which can be plugged into any existing C++ bases application to fulfill simple database requirements.
+
+2) Support value with single string, list of strings 
+
+3) Use hash table(hash function) to implement database. Use linked list to solve conflicts.
+
+*******************************************************
+c. How to run the program
+
+Method One: run the program directly in a C++ IDE
+
+1) open the project in a C++ IDE
+
+2) run main.py
+
+Method Two: build and execute the program with command line
+
+1) build with cmake:
+<<< cd microdbproject
+<<< cmake .
+<<< make
+
+2) run with executable file
+
+*******************************************************
+d. Files
+
+1) main.cpp
+The entry file of the whole project. Provide interactions with users.
+
+2) idx.h
+Define the IDX class 
+
+3) db.h 
+Define DB class.
+
+4) db.cpp
+Implement different methods of DB class.
+
+5) test.cpp
+Implement performance test and correctness test.
+
+4) exception.h
+define a class for exception handling.
+
+5) CMakeList.txt
+
+6) Manual
+
+7) data.tsv
+Used for performance test.
+
+*******************************************************
+e. How our project works
+
+When we run the program in terminal, the program would output some guidelines to show users how to use the MicroDB.
+
+>>> Welcome to MicroDB!
+>>> Enter the name of db. if you want to delete a db, please enter 'delete-' + name of db:
+
+Then the user can choose to delete a db or enter a db.
+
+a. If the user choose to delete a db:
+>>> Db has been found.
+>>> delete successfully!
+
+b. If the user choose to enter a db:
+1). If the db does not exists, then it will create a new db:
+>>> An empty DB will be built!
+
+2). If the db already exists:
+>>> Db has been found.
+
+Then the program will open the database:
+>>> Db has been open.
+>>> Enter 1 to insert, enter 2 to search, enter 3 to delete, enter 4 to query, enter -1 to return to the previous menu
+
+Then the user can enter 1,2,3,4,-1 to go to each operation.
+User Enter 1:
+>>> -------------------------insert operation-----------------------
+>>> insert key : 
+User Enter "key1":
+>>> insert value (use comma to split value):
+User Enter "value1,value2":
+>>> ----------------Insert operation complete----------------------
+
+User Enter 2:
+>>> -------------------------find operation-----------------------
+>>> enter key : 
+User Enter "key1":
+>>> the 0th value is: value1
+>>> the 1th value is: value2
+>>> ----------------Find operation complete------------------------
+
+User Enter 3:
+>>> -------------------------delete operation-----------------------
+>>> enter key : 
+User Enter "key1":
+>>> ----------------Delete operation complete----------------------
+
+User Enter 4:
+>>> -------------------------query operation-----------------------
+>>> enter the value : 
+User Enter "value1":
+>>> enter the position of value : 
+User Enter "0":
+>>> The following keys are what you want : 
+>>> 1. key1
+>>> ------------------Query operation complete---------------------
+
+User Enter -1:
+>>> Db has been closed.
+>>> Enter 1 to continue the program. Enter -1 to exit the program
+
+*******************************************************
+f. How to run test cases
+ 
+To run performance test and correctness_test, execute performance_test. 
+The performance test will output the time cost of insert, find, query and delete function.
+We test the data size of 100, 1000, 10000, 100000, 200000.
+The correctness test will output the result to show whether the database store and retrieve data correctly.
+
+*******************************************************
+g. MicroDB functions
+
+1) bool findDatabase(string s) :
+   check whether the database exists. Return true if exists, otherwise return false.
+
+2) bool open():
+   open the database file. Return true if opens successfully, otherwise return false.
+   Open the files of the database and load the last_idx_off and last_value_off values.
+
+3) bool close():
+   close the database file. Return true if closes successfully, otherwise return false.
+   save the two files that close the database and store the values of last_idx_off and last_value_off to the file.
+
+4) unsigned int hash(const char* key):
+   return the hash value of the key.
+
+5) vector<string> find(const char* key):
+   return the value of the key. If the key is not found in the database, it would return an empty vector.
+
+6) bool del(char* key):
+   Determine whether there exists a key, delete the key value pair if there exists a key, and return false if the key does not exist.
+
+7) bool insert(char* key, vector<string> val):
+   Insert key and value, return 1, if the key already exists, return 0.
+
+8) bool insert_file(string file_name):
+   Insert csv file according to csv file path.
+
+9) bool replace(char* key, vector<string> val);
+   Replace the value corresponding to the key, return false if the key is not found, and return true if the replacement is successful.
+
+10) vector<string> query(int k, string val);
+    Print all keys and corresponding values in the database.
+
+11) void clear();
+    delete the two files of the database.
+
+12) Idx* find_key(const char*key);
+    Find the index structure corresponding to the key, return the pointer of the structure, otherwise return NULL.
+
+*******************************************************
+h. Additional information
+
+The compiler need to support C++11.
