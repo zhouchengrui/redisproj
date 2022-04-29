@@ -1,3 +1,0 @@
-/Users/zll/Desktop/v1/redisproj/cmake-build-debug/CMakeFiles/untitled1.dir
-/Users/zll/Desktop/v1/redisproj/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/zll/Desktop/v1/redisproj/cmake-build-debug/CMakeFiles/rebuild_cache.dir

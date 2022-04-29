@@ -43,7 +43,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "Debug"
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_CACHEFILE_DIR",
@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/zll/Desktop/v1/redisproj"
+			"value" : "/Users/zll/Desktop/redisproj"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -543,7 +543,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/zll/Desktop/v1/redisproj"
+			"value" : "/Users/zll/Desktop/redisproj"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -1119,7 +1119,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/zll/Desktop/v1/redisproj"
+			"value" : "/Users/zll/Desktop/redisproj"
 		},
 		{
 			"name" : "Microdb_IS_TOP_LEVEL",
@@ -1143,43 +1143,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/zll/Desktop/v1/redisproj"
-		},
-		{
-			"name" : "microdb_BINARY_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "/Users/zll/Desktop/v1/redisproj"
-		},
-		{
-			"name" : "microdb_IS_TOP_LEVEL",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "ON"
-		},
-		{
-			"name" : "microdb_SOURCE_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "/Users/zll/Desktop/v1/redisproj"
+			"value" : "/Users/zll/Desktop/redisproj"
 		}
 	],
 	"kind" : "cache",

@@ -162,18 +162,15 @@ g. MicroDB functions
    Insert key and value, return 1, if the key already exists, return 0.
 
 8) bool insert_file(string file_name):
-   Insert csv file according to csv file path.
+   Insert tsv file according to tsv file path.
 
-9) bool replace(char* key, vector<string> val);
-   Replace the value corresponding to the key, return false if the key is not found, and return true if the replacement is successful.
+9) vector<string> query(int k, string val);
+    Print all keys of which the kth value == val.
 
-10) vector<string> query(int k, string val);
-    Print all keys and corresponding values in the database.
-
-11) void clear();
+10) void clear();
     delete the two files of the database.
 
-12) Idx* find_key(const char*key);
+11) Idx* find_key(const char*key);
     Find the index structure corresponding to the key, return the pointer of the structure, otherwise return NULL.
 
 *******************************************************
