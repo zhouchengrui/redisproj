@@ -167,6 +167,8 @@ bool DB::del(char* key) {
         Idx_find->isDelete = true;
         for (int i = 0; i < KEYSIZE_MAX; i++)
             Idx_find->key[i] = '\0';
+        for (int i = 0; i < 10; i++)
+            Idx_find->len_value[i] = 0;
         fseek(fp1, sizeof(int) + sizeof(Idx)*Idx_find->off, 0);
         fwrite(Idx_find, sizeof(Idx), 1, fp1);//renew index file
         fflush(fp1);
@@ -195,7 +197,6 @@ bool DB::insert(char* key, vector<string>  val) {
             temp_i++;
         }
         //Idx_new.len_value = strlen(value);
-        last_idx_off += 1;
         Idx_new.off = off_new;
         Idx_new.isDelete = false;
         Idx_new.off_next = last_idx_off;
