@@ -78,7 +78,7 @@ void run() {
         }
         try
         {
-            if(n < -1 || n > 4){
+            if(n < -1 || n > 4 || n == 0){
                 throw InvalidNumber{};
             }
         }
@@ -147,6 +147,27 @@ void run() {
 
             cout << "Enter 1 to insert, enter 2 to search, enter 3 to delete, enter 4 to query, enter -1 to return to the previous menu" << endl;
             cin >> n;
+            while(cin.fail()){
+                try{
+                    throw InvalidType{};
+                }catch (const Myexcept &e)
+                {
+                    cerr << e.what() << '\n' << endl;
+                }
+                cin.clear();
+                cin.ignore();
+                cin >> n;
+            }
+            try
+            {
+                if(n < -1 || n > 4 || n == 0){
+                    throw InvalidNumber{};
+                }
+            }
+            catch (const Myexcept &e)
+            {
+                cerr << e.what() << '\n' << endl;
+            }
 
         }
         db.close();
